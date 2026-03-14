@@ -1,6 +1,11 @@
 <template>
   <div class="page">
 
+    <!-- BGM -->
+    <audio ref="bgm" loop>
+      <source src="./music.mp3" type="audio/mpeg" />
+    </audio>
+
     <!-- 봉투 화면 -->
     <div v-if="!opened" class="envelope-wrapper" @click.stop="openLetter">
       <div class="envelope">
@@ -115,8 +120,7 @@ const opened = ref(false);
 const showSecret = ref(false);
 const musicStarted = ref(false);
 
-const audio = new Audio("/music.mp3");
-audio.loop = true;
+const bgm = ref(null);
 
 const openLetter = () => {
   opened.value = true;
@@ -132,13 +136,15 @@ const startMusic = () => {
     return;
   }
 
-  audio.play()
-    .then(() => {
-      musicStarted.value = true;
-    })
-    .catch(() => {
-      console.log("audio blocked");
-    });
+  if (bgm.value) {
+    bgm.value.play()
+      .then(() => {
+        musicStarted.value = true;
+      })
+      .catch((e) => {
+        console.log("audio blocked", e);
+      });
+  }
 
 };
 </script>

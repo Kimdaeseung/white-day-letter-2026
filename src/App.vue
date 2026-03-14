@@ -9,7 +9,6 @@
     <!-- 봉투 -->
     <div v-if="!opened" class="envelope-wrapper" @click.stop="openLetter">
       <div class="envelope">
-        <div class="flap"></div>
         <div class="letter-icon">💌</div>
       </div>
       <p class="open-text">편지를 열어주세요</p>

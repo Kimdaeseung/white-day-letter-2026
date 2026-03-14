@@ -1,12 +1,12 @@
 <template>
-  <div class="page">
+  <div class="page" @click="handleFirstTouch">
 
     <!-- BGM -->
     <audio ref="bgm" loop>
-      <source src="./music.mp3" type="audio/mpeg" />
+      <source src="/music.mp3" type="audio/mpeg" />
     </audio>
 
-    <!-- 봉투 화면 -->
+    <!-- 봉투 -->
     <div v-if="!opened" class="envelope-wrapper" @click.stop="openLetter">
       <div class="envelope">
         <div class="flap"></div>
@@ -17,14 +17,12 @@
     </div>
 
     <!-- 편지 -->
-    <main v-if="opened" class="container" @click="startMusic">
+    <main v-if="opened" class="container">
 
-      <!-- BGM 안내 -->
-      <transition name="fade">
-        <div v-if="!musicStarted" class="bgm-guide">
-          🎵 배경을 클릭하면 BGM이 실행됩니다
-        </div>
-      </transition>
+      <!-- BGM 안내 (1주년 코드와 동일 방식) -->
+      <div v-if="!musicStarted" class="touch-hint-fixed">
+        화면을 한 번 눌러줘
+      </div>
 
       <div class="petals">
         <span v-for="n in 18" :key="n" class="petal"></span>
@@ -88,24 +86,6 @@
           <p class="name">너를 많이 아끼는 바봉이가</p>
         </div>
 
-        <!-- 숨겨진 메세지 -->
-        <div class="button-row">
-          <button class="love-button" @click.stop="toggleMessage">
-            {{ showSecret ? "닫기" : "숨겨둔 한마디 보기" }}
-          </button>
-        </div>
-
-        <transition name="soft-rise">
-          <div v-if="showSecret" class="secret-message">
-            <div class="secret-title">Forever 윤.수.연</div>
-            <p>
-              앞으로도 이쁜일만 가득할거구~<br />
-              1년이라는 시간을 넘어 함께하면서 너무 행복했어~<br />
-              앞으로 남은 생 마지막까지 잘 부탁해요~ 내사랑~
-            </p>
-          </div>
-        </transition>
-
         <div class="bottom-deco">❀ ❁ ✿ ❁ ❀</div>
 
       </section>
@@ -117,36 +97,37 @@
 import { ref } from "vue";
 
 const opened = ref(false);
-const showSecret = ref(false);
 const musicStarted = ref(false);
 
 const bgm = ref(null);
 
+/* 봉투 열기 */
 const openLetter = () => {
   opened.value = true;
 };
 
-const toggleMessage = () => {
-  showSecret.value = !showSecret.value;
-};
-
-const startMusic = () => {
+/* 첫 화면 터치 시 BGM */
+function handleFirstTouch() {
 
   if (musicStarted.value) {
     return;
   }
 
-  if (bgm.value) {
-    bgm.value.play()
-      .then(() => {
-        musicStarted.value = true;
-      })
-      .catch((e) => {
-        console.log("audio blocked", e);
-      });
+  if (!bgm.value) {
+    return;
   }
 
-};
+  bgm.value.volume = 0.35;
+
+  bgm.value.play()
+    .then(() => {
+      musicStarted.value = true;
+    })
+    .catch((e) => {
+      console.log("audio blocked", e);
+    });
+
+}
 </script>
 
 <style scoped>
@@ -156,37 +137,26 @@ min-height:100vh;
 background:linear-gradient(180deg,#fff7fb,#fff0f6);
 }
 
-/* 안내 문구 */
+/* BGM 안내 */
 
-.bgm-guide{
+.touch-hint-fixed{
 position:fixed;
-top:50%;
+bottom:40px;
 left:50%;
-transform:translate(-50%,-50%);
-background:rgba(0,0,0,0.65);
+transform:translateX(-50%);
+background:rgba(0,0,0,0.7);
 color:white;
-padding:14px 24px;
+padding:12px 20px;
 border-radius:30px;
-font-size:15px;
+font-size:14px;
 z-index:10;
-backdrop-filter:blur(6px);
-animation:pulse 1.5s infinite;
+animation:pulse 1.6s infinite;
 }
 
 @keyframes pulse{
 0%{opacity:.6}
 50%{opacity:1}
 100%{opacity:.6}
-}
-
-.fade-enter-active,
-.fade-leave-active{
-transition:opacity .6s;
-}
-
-.fade-enter-from,
-.fade-leave-to{
-opacity:0;
 }
 
 /* 봉투 */
@@ -206,10 +176,8 @@ cursor:pointer;
 width:200px;
 height:130px;
 background:#ffb3c7;
-position:relative;
 border-radius:10px;
-box-shadow:0 10px 40px rgba(0,0,0,0.15);
-animation:float 2s ease-in-out infinite;
+position:relative;
 }
 
 .flap{
@@ -235,12 +203,6 @@ color:#c75c85;
 font-weight:bold;
 }
 
-@keyframes float{
-0%{transform:translateY(0)}
-50%{transform:translateY(-10px)}
-100%{transform:translateY(0)}
-}
-
 /* 편지 */
 
 .container{
@@ -254,7 +216,7 @@ width:100%;
 max-width:720px;
 padding:40px 28px;
 border-radius:28px;
-background:rgba(255,255,255,0.9);
+background:white;
 box-shadow:0 20px 60px rgba(0,0,0,0.12);
 }
 
@@ -310,30 +272,6 @@ text-align:right;
 
 .name{
 font-weight:bold;
-}
-
-.button-row{
-display:flex;
-justify-content:center;
-margin-top:20px;
-}
-
-.love-button{
-padding:12px 22px;
-border-radius:30px;
-border:none;
-background:#ff86a8;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-
-.secret-message{
-margin-top:20px;
-padding:20px;
-border-radius:20px;
-background:#fff0f6;
-text-align:center;
 }
 
 .bottom-deco{

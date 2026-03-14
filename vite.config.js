@@ -3,5 +3,5 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   plugins: [vue()],
-  base: '/white-day-letter-2026/'
+  base: './'
 })

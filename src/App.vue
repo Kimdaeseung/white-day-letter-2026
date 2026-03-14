@@ -22,7 +22,6 @@
     <!-- 편지 -->
     <main v-if="opened" class="container">
 
-      <!-- BGM 안내 -->
       <div v-if="!musicStarted" class="touch-hint-fixed">
         화면을 한 번 눌러줘
       </div>
@@ -97,7 +96,7 @@
             <p>
               앞으로도 이쁜일만 가득할거구~<br />
               1년이라는 시간을 넘어 함께하면서 너무 행복했어~<br />
-              앞으로 남은 생 마지막까지 잘 부탁해요~ 내사랑~ 
+              앞으로 남은 생 마지막까지 잘 부탁해요~ 내사랑~
             </p>
           </div>
         </transition>
@@ -190,14 +189,6 @@ border-radius:10px;
 position:relative;
 }
 
-.flap{
-position:absolute;
-top:-65px;
-border-left:100px solid transparent;
-border-right:100px solid transparent;
-border-bottom:65px solid #ff9fb7;
-}
-
 .letter-icon{
 position:absolute;
 font-size:42px;
@@ -249,8 +240,6 @@ line-height:1.4;
 text-align:center;
 margin-top:10px;
 }
-
-/* ⭐ 중앙 꽃 정렬 수정 */
 
 .line-deco{
 display:flex;
@@ -321,6 +310,8 @@ text-align:center;
 margin-top:20px;
 }
 
+/* 🌸 벚꽃 개선 */
+
 .petals{
 position:fixed;
 inset:0;
@@ -331,11 +322,21 @@ z-index:5;
 .petal{
 position:absolute;
 top:-30px;
-width:16px;
-height:16px;
-background:rgba(255,182,193,0.55);
-border-radius:50%;
+width:12px;
+height:18px;
+background:rgba(255,182,193,0.65);
+border-radius:60% 60% 60% 60% / 70% 70% 40% 40%;
 animation:fall linear infinite;
+transform-origin:center;
+filter:blur(0.3px);
+}
+
+.petal:nth-child(odd){
+transform:rotate(25deg);
+}
+
+.petal:nth-child(even){
+transform:rotate(-20deg);
 }
 
 .petal:nth-child(1){left:5%;animation-duration:12s}
@@ -358,8 +359,15 @@ animation:fall linear infinite;
 .petal:nth-child(18){left:95%;animation-duration:14s}
 
 @keyframes fall{
-0%{transform:translateY(-10vh) rotate(0deg)}
-100%{transform:translateY(110vh) rotate(360deg)}
+0%{
+transform:translateY(-10vh) rotate(0deg);
+}
+50%{
+transform:translateY(50vh) translateX(20px) rotate(180deg);
+}
+100%{
+transform:translateY(110vh) translateX(-20px) rotate(360deg);
+}
 }
 
 @media (max-width:640px){
@@ -373,4 +381,5 @@ font-size:30px;
 }
 
 }
+
 </style>
